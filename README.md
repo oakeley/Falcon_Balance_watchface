@@ -1,7 +1,8 @@
 # WD-Color-Watchface Compatible with ZeppOS v1, v2, v3...
 
 <p align="center">
- <img src="https://github.com/miguelavh/WFWD-Active-ColorV3_Zeppos3/blob/59301c1d0adf5e19f496558a5778605a0724daa3/assets/gts3/images/icon.png" alt="Watchface preview"/>
+ 
+ <img src="https://github.com/miguelavh/WD-Color-Watchface/blob/12e731de76b5d3ffc78d5dccba59b6c6e0fdd9fc/assets/gtr-3/images/preview.gif" alt="Watchface preview"/>
 </p>
 
 
