@@ -63,8 +63,8 @@ const screenType = hmSetting.getScreenType();
 //let lastWatchdripData=null;
 
 const IMG = 'images/';
-const DW = 480;
-const DH = 480;
+const DW = 470;
+const DH = 470;
 const T_WIDTH = 61;
 const T_HEIGHT = 115;
 const T_SPACE = 12;
@@ -117,7 +117,7 @@ const EDIT_GROUP_PROP = {
 const C_SIZE = 50;
 const C1_DEFAULT = hmUI.data_type.HEART;
 const C2_DEFAULT = hmUI.data_type.WEATHER;
-const C_POS = [DH-C_SIZE+20, PROGRESS_TH+25];
+const C_POS = [DH-C_SIZE+20-5, PROGRESS_TH+25+5];
 
 const W_SIZE = 37;
 
@@ -318,8 +318,8 @@ WatchFace({
 			function makeProgress(i, typei) {
 				p = PROGRESSES[i];
 				let props = {
-					center_x: p[0],
-					center_y: p[1],
+					center_x: p[0]+5,
+					center_y: p[1]+5,
 					radius: PROGRESS_R,
 					start_angle: p[2],
 					end_angle: p[3],
@@ -340,14 +340,14 @@ WatchFace({
 				});
 
 				widget = hmUI.createWidget(hmUI.widget.IMG, { // icon
-					x: [I_SPACE_H, DW-I_SIZE-I_SPACE_H][i % 2],
+					x: [I_SPACE_H+10, DW-I_SIZE-I_SPACE_H][i % 2],
 					y: [DW/2+I_SPACE_V-80, DH-DW/2-I_SIZE-I_SPACE_V+80][Math.floor(i/2) % 2],
 					src: I_DIR+EDITS[typei][0],
 					show_level: hmUI.show_level.ONLY_NORMAL
 				});
 				
 				widget=hmUI.createWidget(hmUI.widget.TEXT_IMG, { // text
-					x: [I_SPACE_H, DW-S_WIDTH-I_SPACE_H][i % 2],
+					x: [I_SPACE_H+5, DW-S_WIDTH-I_SPACE_H+5][i % 2],
 					y: [DW/2+2*I_SPACE_V+I_SIZE-85, DH-DW/2-2*I_SPACE_V-I_SIZE-S_HEIGHT+85][Math.floor(i/2) % 2],
 					w: S_WIDTH,
 					h: I_SIZE,
@@ -477,8 +477,8 @@ WatchFace({
 			if (screenType === hmSetting.screen_type.WATCHFACE) 
 			{
 				let lightWidget=hmUI.createWidget(hmUI.widget.IMG, { 
-					x: (DW-55)/2,
-					y: -10,
+					x: (DW-50)/2,
+					y: 0,
 					src: IMG+'bright.png',
 					show_level: hmUI.show_level.ONLY_NORMAL
 				}).addEventListener(hmUI.event.CLICK_UP, function (info) {

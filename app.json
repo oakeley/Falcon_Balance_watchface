@@ -235,6 +235,10 @@
         {
           "name": "gts3-2",
           "deviceSource": 225
+        },
+        {
+          "name": "gts4mini_new",
+          "deviceSource": 9502977
         }
       ],
       "designWidth": 390

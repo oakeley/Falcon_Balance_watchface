@@ -340,6 +340,8 @@ export class WatchdripV3 {
                 this.nextUpdateTime=this.timeSensor.utc+10000;
                 this.saveControl(this.nextUpdateTime);
 				hmApp.startApp({ appid: WATCHDRIP_APP_ID, url: 'page/index', param: 'update_local' });				
+                this.nextUpdateTime=this.timeSensor.utc+10000;
+                this.saveControl(this.nextUpdateTime);
                 this.readValueInfo();
             }
             this.updateWidgets();

@@ -96,8 +96,8 @@ const timeNumsAOD = range(10).map((v) => {
     return img(`time_numbers_aod/${v}.png`);
 });
 
-const DW = 480;
-const DH = 480;
+const DW = 470;
+const DH = 470;
 const T_WIDTH = 61;
 const T_HEIGHT = 115;
 const T_SPACE = 12;
