@@ -6,7 +6,7 @@
     "appType": "watchface",
     "version": {
       "code": 1,
-      "name": "1.0.0"
+      "name": "1.1.1"
     },
     "vender": "nimrod100",
     "description": "Color WD",
@@ -159,7 +159,39 @@
         {
           "name": "gtr-4-3",
           "deviceSource": 7864577
-        }  
+        },
+        {
+          "name": "active-2-1",
+          "deviceSource": 8913152
+        },
+        {
+          "name": "active-2-2",
+          "deviceSource": 8913153
+        },
+        {
+          "name": "active-2-3",
+          "deviceSource": 8913155
+        },
+        {
+          "name": "active-2-4",
+          "deviceSource": 8913159
+        },
+        {
+          "name": "active-2-5",
+          "deviceSource": 10092800
+        },
+        {
+          "name": "active-2-6",
+          "deviceSource": 10092801
+        },
+        {
+          "name": "active-2-7",
+          "deviceSource": 10092803
+        },
+        {
+          "name": "active-2-8",
+          "deviceSource": 10092807
+        }
       ],
       "designWidth": 466
     },
@@ -239,6 +271,18 @@
         {
           "name": "gts4mini_new",
           "deviceSource": 9502977
+        },
+	      {          
+          "name": "bip6-1",
+          "deviceSource": 9765120
+        },
+	      {          
+          "name": "bip6-2",
+          "deviceSource": 9765121
+        },
+	      {          
+          "name": "bip6-3",
+          "deviceSource": 10158337
         }
       ],
       "designWidth": 390

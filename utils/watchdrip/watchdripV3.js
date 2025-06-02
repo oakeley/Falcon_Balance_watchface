@@ -329,21 +329,20 @@ export class WatchdripV3 {
 		if(this.updatingData)
 			return;
 		this.lastUpdateAttempt = this.timeSensor.utc;
+		let nextTime=this.readControl();
+		if(nextTime>0 && nextTime>this.nextUpdateTime+" AOD "+this.isAOD())
+			this.nextUpdateTime=nextTime;
 
-		if(this.nextUpdateTime<=this.timeSensor.utc)
+        if(this.nextUpdateTime<=this.timeSensor.utc)
 		{
 			this.resetLastUpdate();
 			this.updatingData = true;
-            //this.readValueInfo();
-			if(this.nextUpdateTime<=this.timeSensor.utc)
-			{
-                this.nextUpdateTime=this.timeSensor.utc+10000;
-                this.saveControl(this.nextUpdateTime);
-				hmApp.startApp({ appid: WATCHDRIP_APP_ID, url: 'page/index', param: 'update_local' });				
-                this.nextUpdateTime=this.timeSensor.utc+10000;
-                this.saveControl(this.nextUpdateTime);
-                this.readValueInfo();
-            }
+            this.nextUpdateTime=this.timeSensor.utc+10000;
+            this.saveControl(this.nextUpdateTime);
+	        hmApp.startApp({ appid: WATCHDRIP_APP_ID, url: 'page/index', param: 'update_local' });				
+            this.nextUpdateTime=this.timeSensor.utc+10000;
+            this.saveControl(this.nextUpdateTime);
+            this.readValueInfo();
             this.updateWidgets();
 			this.updatingData = false;
 		}
@@ -359,17 +358,35 @@ export class WatchdripV3 {
 	}
 
     readControl() {
-        let value = "";
-        value = fs.readTextFile(WF_CTRL_FILE);
-        if (value) 
-        {
-            return Number(value);
-        }
+        let value = "0";
+		try
+		{
+            let destination_buf = new Uint8Array(100);
+            const file = hmFS.open('control.dat', hmFS.O_RDONLY);
+            hmFS.read(file, destination_buf.buffer, 0, 100);
+            hmFS.close(file);
+            const content = ab2str(destination_buf.buffer).replace(/\0/g, '');
+            destination_buf=null;
+            if (content) 
+			{
+				return Number(content);
+			}          
+		} catch (error) {
+            console.log("Exception reading control file "+error+" AOD "+this.isAOD());
+		}			
         return 0;
     }
 
     saveControl(value) {
-        fs.writeTextFile(WF_CTRL_FILE, value.toString());
+		try {
+            const stringBuffer = str2ab(value.toString());
+            let source_buf = new Uint8Array(stringBuffer);
+            const file = hmFS.open('control.dat', hmFS.O_CREAT | hmFS.O_WRONLY);
+            hmFS.write(file, source_buf.buffer, 0, source_buf.length);
+            hmFS.close(file);            
+		} catch (error) {
+            console.log("Exception writing control file "+error+" AOD "+this.isAOD());
+		}        
     }
 
     createWatchdripDir() {
@@ -423,11 +440,8 @@ export class WatchdripV3 {
         if (data) 
         {
 		    try {
-			    //this.updateLog("DATA TO JSON");
-			    //debug.log("data was read");
 		        let oldTime=this.watchdripData.getBg().time;
 			    this.watchdripData.setData(data); 
-			    //this.updateLog("SET DATA");
 			    this.watchdripData.timeDiff = 0;
 			    this.nextUpdateTime=this.watchdripData.getBg().time+305000;
                 if(this.nextUpdateTime<=this.timeSensor.utc)
