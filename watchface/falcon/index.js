@@ -61,6 +61,11 @@ let valorBG = "0";
 let tipoColorBG = 0;
 let trendBGAOD="";
 let trendBGAODStand="";
+// Add value caching
+let lastBgValue = null;
+let lastPhoneBattery = null;
+let lastTrendImage = null;
+let lastDelta = null;
 //let {graphEnabled} = getApp()._options.globalData;
 
 const screenType = hmSetting.getScreenType();
@@ -580,14 +585,15 @@ WatchFace({
     updateStart() {
 		if (screenType === hmSetting.screen_type.WATCHFACE)
 		{
-			bgValTimeTextWidget.setProperty(hmUI.prop.VISIBLE, false);
-			bgDeltaTextWidget.setProperty(hmUI.prop.VISIBLE, false);
-			bgTrendImageWidget.setProperty(hmUI.prop.VISIBLE, false);
-			bgValTextImgWidget.setProperty(hmUI.prop.VISIBLE, false);
-			bgValTextImgLowWidget.setProperty(hmUI.prop.VISIBLE, false);
-			bgValTextImgHighWidget.setProperty(hmUI.prop.VISIBLE, false);
-			bgValNoDataTextWidget.setProperty(hmUI.prop.VISIBLE, false);
-			bgStaleLine.setProperty(hmUI.prop.VISIBLE, false);
+            //Less annoying to keep everything displayed during updates
+			//bgValTimeTextWidget.setProperty(hmUI.prop.VISIBLE, false);
+			//bgDeltaTextWidget.setProperty(hmUI.prop.VISIBLE, false);
+			//bgTrendImageWidget.setProperty(hmUI.prop.VISIBLE, false);
+			//bgValTextImgWidget.setProperty(hmUI.prop.VISIBLE, false);
+			//bgValTextImgLowWidget.setProperty(hmUI.prop.VISIBLE, false);
+			//bgValTextImgHighWidget.setProperty(hmUI.prop.VISIBLE, false);
+			//bgValNoDataTextWidget.setProperty(hmUI.prop.VISIBLE, false);
+			//bgStaleLine.setProperty(hmUI.prop.VISIBLE, false);
 			startLoader();
 		}
     },
@@ -595,9 +601,12 @@ WatchFace({
 		if (screenType === hmSetting.screen_type.WATCHFACE)
 		{
 			stopLoader();
-			bgValTimeTextWidget.setProperty(hmUI.prop.VISIBLE, true);
-			bgDeltaTextWidget.setProperty(hmUI.prop.VISIBLE, true);
-			bgTrendImageWidget.setProperty(hmUI.prop.VISIBLE, true);
+            // Only update widgets that actually changed
+            if (isSuccess) {
+                bgValTimeTextWidget.setProperty(hmUI.prop.VISIBLE, true);
+                bgDeltaTextWidget.setProperty(hmUI.prop.VISIBLE, true);
+                bgTrendImageWidget.setProperty(hmUI.prop.VISIBLE, true);
+            }
 		}
     },
 
@@ -606,23 +615,24 @@ WatchFace({
      */
     updateValuesWidget(watchdripData) {
         if (watchdripData===null || watchdripData === undefined) 
-		{
-			return;
-		}
+        {
+            return;
+        }
         const bgObj = watchdripData.getBg();
 
-        // Update phone battery data if available
+        // Update phone battery silently (no progress indicator)
         if (screenType === hmSetting.screen_type.WATCHFACE) {
             const status = watchdripData.getStatus();
             if (status) {
                 const batValue = status.getBatVal();
-                if (batValue !== undefined && batValue !== null) {
-                    // Update all phone battery text widgets
+                if (batValue !== undefined && batValue !== null && batValue !== lastPhoneBattery) {
+                    lastPhoneBattery = batValue;
+                    // Update all phone battery text widgets silently
                     for (let i = 0; i < phoneBatteryWidgets.length; i++) {
                         phoneBatteryWidgets[i].setProperty(hmUI.prop.TEXT, batValue.toString());
                     }
                     
-                    // Update all phone battery progress arcs
+                    // Update all phone battery progress arcs silently
                     const batPercentage = parseInt(batValue) || 0;
                     for (let i = 0; i < phoneBatteryArcs.length; i++) {
                         phoneBatteryArcs[i].setProperty(hmUI.prop.LEVEL, batPercentage);
@@ -631,56 +641,71 @@ WatchFace({
             }
         }
 
-        if (bgObj.isHasData()) 
-		{
-			valorBG=bgObj.getBGVal();
-			if( bgObj.isLow)
-				tipoColorBG=1;
-			else if(bgObj.isHigh)
-				tipoColorBG=2;
-			else
-				tipoColorBG=0;
-			if (bgObj.isHigh || bgObj.isLow) {
-				if (bgObj.isHigh) {
-					bgValTextImgHighWidget.setProperty(hmUI.prop.TEXT, bgObj.getBGVal());
-					bgValTextImgHighWidget.setProperty(hmUI.prop.VISIBLE, true);
-					bgValTextImgWidget.setProperty(hmUI.prop.VISIBLE, false);
-					bgValTextImgLowWidget.setProperty(hmUI.prop.VISIBLE, false);
-				};
-				if (bgObj.isLow) {
-					bgValTextImgLowWidget.setProperty(hmUI.prop.TEXT, bgObj.getBGVal());
-					bgValTextImgLowWidget.setProperty(hmUI.prop.VISIBLE, true);
-					bgValTextImgWidget.setProperty(hmUI.prop.VISIBLE, false);
-					bgValTextImgHighWidget.setProperty(hmUI.prop.VISIBLE, false);
-				};
-			} else {
-				bgValTextImgWidget.setProperty(hmUI.prop.TEXT, bgObj.getBGVal());
-				bgValTextImgWidget.setProperty(hmUI.prop.VISIBLE, true);
-				bgValTextImgLowWidget.setProperty(hmUI.prop.VISIBLE, false);
-				bgValTextImgHighWidget.setProperty(hmUI.prop.VISIBLE, false);
-			}
-			if (screenType === hmSetting.screen_type.WATCHFACE)            
-			{
-				bgValNoDataTextWidget.setProperty(hmUI.prop.VISIBLE, false);
-			}
-        } 
-		else 
-		{
-			if (screenType === hmSetting.screen_type.WATCHFACE)
-			{
-				bgValNoDataTextWidget.setProperty(hmUI.prop.VISIBLE, true);
-			}
+        // Check if glucose data actually changed before showing progress
+        const currentBgValue = bgObj.getBGVal();
+        const currentTrend = bgObj.getArrowResource ? bgObj.getArrowResource() : null;
+        const currentDelta = bgObj.delta;
+        
+        const bgDataChanged = (currentBgValue !== lastBgValue) || 
+                             (currentTrend !== lastTrendImage) || 
+                             (currentDelta !== lastDelta);
+
+        if (bgObj.isHasData()) {
+            valorBG = bgObj.getBGVal();
+            if (bgObj.isLow)
+                tipoColorBG = 1;
+            else if (bgObj.isHigh)
+                tipoColorBG = 2;
+            else
+                tipoColorBG = 0;
+
+            // Only update glucose widgets if data actually changed
+            if (bgDataChanged) {
+                lastBgValue = currentBgValue;
+
+                if (bgObj.isHigh || bgObj.isLow) {
+                    if (bgObj.isHigh) {
+                        bgValTextImgHighWidget.setProperty(hmUI.prop.TEXT, bgObj.getBGVal());
+                        bgValTextImgHighWidget.setProperty(hmUI.prop.VISIBLE, true);
+                        bgValTextImgWidget.setProperty(hmUI.prop.VISIBLE, false);
+                        bgValTextImgLowWidget.setProperty(hmUI.prop.VISIBLE, false);
+                    }
+                    if (bgObj.isLow) {
+                        bgValTextImgLowWidget.setProperty(hmUI.prop.TEXT, bgObj.getBGVal());
+                        bgValTextImgLowWidget.setProperty(hmUI.prop.VISIBLE, true);
+                        bgValTextImgWidget.setProperty(hmUI.prop.VISIBLE, false);
+                        bgValTextImgHighWidget.setProperty(hmUI.prop.VISIBLE, false);
+                    }
+                } else {
+                    bgValTextImgWidget.setProperty(hmUI.prop.TEXT, bgObj.getBGVal());
+                    bgValTextImgWidget.setProperty(hmUI.prop.VISIBLE, true);
+                    bgValTextImgLowWidget.setProperty(hmUI.prop.VISIBLE, false);
+                    bgValTextImgHighWidget.setProperty(hmUI.prop.VISIBLE, false);
+                }
+            }
+
+            if (screenType === hmSetting.screen_type.WATCHFACE) {
+                bgValNoDataTextWidget.setProperty(hmUI.prop.VISIBLE, false);
+            }
+        } else {
+            if (screenType === hmSetting.screen_type.WATCHFACE) {
+                bgValNoDataTextWidget.setProperty(hmUI.prop.VISIBLE, true);
+            }
         }
-		
-		bgDeltaTextWidget.setProperty(hmUI.prop.TEXT, bgObj.delta);
+
+        // Always update delta and trend (not just when data changes)
+        bgDeltaTextWidget.setProperty(hmUI.prop.TEXT, bgObj.delta);
+        
         if (screenType === hmSetting.screen_type.AOD) {
-			bgTrendImageWidget.setProperty(hmUI.prop.SRC, bgObj.getArrowAODResource());
-		} else {
-			bgTrendImageWidget.setProperty(hmUI.prop.SRC, bgObj.getArrowResource());
-		}
-	
+            bgTrendImageWidget.setProperty(hmUI.prop.SRC, bgObj.getArrowAODResource());
+        } else {
+            bgTrendImageWidget.setProperty(hmUI.prop.SRC, bgObj.getArrowResource());
+        }
+        
+        // Update the cached values for next comparison
+        lastDelta = currentDelta;
+        lastTrendImage = currentTrend;
     },
-	
     /**
      * @param {WatchdripData} watchdripData The watchdrip data info
      */
