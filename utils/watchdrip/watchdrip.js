@@ -404,18 +404,29 @@ export class Watchdrip {
     }
 
     forceFetchInfo() {
-		
-        if(!hmBle.connectStatus())
-		{
-			let actualValue=this.watchdripData.getTimeAgo(this.watchdripData.getBg().time);
-			if(lastTimeValue!=actualValue)
-			{
-				this.updateTimesWidget();
-				lastTimeValue=actualValue;
-			}			
-			this.updatingData = false;
-			return;
-		}
+		// When swimming it is annoying to have the watch screen constantly polling the phone, so only poll if the phone is connected
+        if(!hmBle.connectStatus()) {
+            let actualValue=this.watchdripData.getTimeAgo(this.watchdripData.getBg().time);
+            if(lastTimeValue!=actualValue) {
+                this.updateTimesWidget();
+                lastTimeValue=actualValue;
+            }
+            this.updatingData = false;
+            
+            // Stop the timer when Bluetooth is disconnected
+            if (this.intervalTimerForce != null) {
+                this.globalNS.clearInterval(this.intervalTimerForce);
+                this.intervalTimerForce = null;
+            }
+            return;
+        }
+        
+        // Restart timer if it was stopped and Bluetooth is now connected
+        if (this.intervalTimerForce === null) {
+            this.intervalTimerForce = this.globalNS.setInterval(() => {
+                this.forceFetchInfo();            
+            }, 1000);
+        }
 
 		
 		if(this.nextUpdateTime<=this.timeSensor.utc)
@@ -481,13 +492,14 @@ export class Watchdrip {
 					{
 						this.updateFinish();					
 						this.updateWidgets();
-						if(!this.isAOD() && this.lastUpdateSucessful && this.watchdripData.getBg().time<=(this.timeSensor.utc-305000))
+						if(!this.isAOD() && this.lastUpdateSucessful && this.watchdripData.getBg().time<=(this.timeSensor.utc-65000))
 						{
 							this.nextUpdateTime=this.timeSensor.utc+10000;
 						}
-						else if(this.lastUpdateSucessful && this.watchdripData.getBg().time>(this.timeSensor.utc-305000))
+						else if(this.lastUpdateSucessful && this.watchdripData.getBg().time>(this.timeSensor.utc-65000))
 						{
-							this.nextUpdateTime=this.watchdripData.getBg().time+305000;
+							//this.nextUpdateTime=this.watchdripData.getBg().time+305000;
+                            this.nextUpdateTime=this.watchdripData.getBg().time+65000; // 65 seconds for Libre
 							this.dropConnection();
 						}
 						else if(!this.lastUpdateSucessful)
@@ -537,7 +549,7 @@ export class Watchdrip {
                 //debug.log("data was read");
                 this.watchdripData.setData(data); 
                 this.watchdripData.timeDiff = 0;
-				this.nextUpdateTime=this.watchdripData.getBg().time+305000;
+				this.nextUpdateTime=this.watchdripData.getBg().time+65000;
             } catch (e) {
 				info = null;
 				//debug.log("readInfo error:" + e);

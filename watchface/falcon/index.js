@@ -50,8 +50,12 @@ import {
 } from "./styles";
 import {Colors, PROGRESS_ANGLE_INC, PROGRESS_UPDATE_INTERVAL_MS} from "../../utils/config/constants";
 
-let bgValNoDataTextWidget, bgValTextImgWidget,bgValTextImgLowWidget,bgValTextImgHighWidget, bgValTimeTextWidget, bgDeltaTextWidget, bgTrendImageWidget, bgStaleLine, 
-    progress,editGroupLarge,watchdrip,globalNS, progressTimer, progressAngle,digitalClock;
+let bgValNoDataTextWidget, bgValTextImgWidget, bgValTextImgLowWidget, bgValTextImgHighWidget, bgValTimeTextWidget, bgDeltaTextWidget, bgTrendImageWidget, bgStaleLine, 
+    progress, editGroupLarge, watchdrip, globalNS, progressTimer, progressAngle, digitalClock;
+
+// Phone battery widget arrays
+const phoneBatteryWidgets = [];
+const phoneBatteryArcs = [];
 
 let valorBG = "0";
 let tipoColorBG = 0;
@@ -84,16 +88,15 @@ const PROGRESSES = [
     [(DW/2)+2, DH-DW/2, P_START, 180-P_END, 4]
 ];
 
-//NUEVO
 const EDIT_TYPES = [
-	10001, //hmUI.data_type.STEP,
-    10002, //hmUI.data_type.CAL,
-    10003, //hmUI.data_type.HEART,
-    10004, //hmUI.data_type.PAI_WEEKLY,
-    10005, //hmUI.data_type.BATTERY
-	10006  //Phone Battery
+    hmUI.data_type.STEP,
+    hmUI.data_type.CAL,
+    hmUI.data_type.HEART,
+    hmUI.data_type.PAI_WEEKLY,
+    hmUI.data_type.BATTERY,
+    10006  // Phone Battery - custom type
 ];
-const DEFAULTS_ORDER = [0, 1, 5, 4];
+const DEFAULTS_ORDER = [0, 1, 3, 4];
 
 const I_DIR = IMG+'icons/';
 const IL_DIR = IMG+'icons_l/';
@@ -103,12 +106,8 @@ const EDITS = [
     ['heart.png', 0xf82010],
     ['pai.png', 0x5252ff],
     ['battery.png', 0x02fa7a],
-	['phoneBattery.png',0x528eff]
+    ['phoneBattery.png', 0x528eff]  // Phone battery icon
 ];
-const phoneBatteryWidgets=[];
-const phoneBatteryArcs=[];
-
-//NUEVO
 const I_SIZE = 25;
 const IL_SIZE = 31;
 const I_SPACE_H = 4;
@@ -122,10 +121,8 @@ const EDIT_GROUP_PROP = {
 };
 
 const C_SIZE = 50;
-//NUEVO
-const C1_DEFAULT = 10003;//hmUI.data_type.HEART;
-const C2_DEFAULT = 10007;//hmUI.data_type.WEATHER;
-//NUEVO
+const C1_DEFAULT = hmUI.data_type.HEART;
+const C2_DEFAULT = hmUI.data_type.WEATHER;
 const C_POS = [DH-C_SIZE+20, PROGRESS_TH+25];
 
 const W_SIZE = 37;
@@ -232,15 +229,13 @@ WatchFace({
 				});
 			}
 		
-			//NUEVO
 			let c_opt_types = [
 				...opt_types,
 				{
-					type: 10007,//hmUI.data_type.WEATHER,
+					type: hmUI.data_type.WEATHER,
 					preview: IL_DIR+'weather.png'
 				}
 			];
-			//NUEVO
 		
 			let groups = [];
 			for (let i of PROGRESSES.keys()) {
@@ -342,8 +337,7 @@ WatchFace({
 					color: setBrightness(EDITS[typei][1], P_DISABLED),
 					level: 100
 				});
-				
-				//NUEVO
+
 				widget = hmUI.createWidget(hmUI.widget.IMG, { // icon
 					x: [I_SPACE_H, DW-I_SIZE-I_SPACE_H][i % 2],
 					y: [DW/2+I_SPACE_V-80, DH-DW/2-I_SIZE-I_SPACE_V+80][Math.floor(i/2) % 2],
@@ -351,27 +345,16 @@ WatchFace({
 					show_level: hmUI.show_level.ONLY_NORMAL
 				});
 
-				let data_type=hmUI.data_type.HEART;
-				switch(EDIT_TYPES[typei])
-				{
-					case 10001: data_type= hmUI.data_type.STEP;break;
-					case 10002: data_type= hmUI.data_type.CAL;break;
-					case 10003: data_type= hmUI.data_type.HEART;break;
-					case 10004: data_type= hmUI.data_type.PAI_WEEKLY;break;
-					case 10005: data_type= hmUI.data_type.BATTERY;break;
-					default: data_type=hmUI.data_type.HEART;
-				}
-				if(EDIT_TYPES[typei]!==10006)
-				{
-					widget=hmUI.createWidget(hmUI.widget.ARC_PROGRESS, { // progress
+				if (EDIT_TYPES[typei] !== 10006) {
+					// Regular widget with data binding
+					widget = hmUI.createWidget(hmUI.widget.ARC_PROGRESS, { // progress
 						...props,
 						line_width: PROGRESS_TH,
 						color: EDITS[typei][1],
-						type: data_type,
+						type: EDIT_TYPES[typei],
 					});
 
-				
-					widget=hmUI.createWidget(hmUI.widget.TEXT_IMG, { // text
+					widget = hmUI.createWidget(hmUI.widget.TEXT_IMG, { // text
 						x: [I_SPACE_H, DW-S_WIDTH-I_SPACE_H][i % 2],
 						y: [DW/2+2*I_SPACE_V+I_SIZE-85, DH-DW/2-2*I_SPACE_V-I_SIZE-S_HEIGHT+85][Math.floor(i/2) % 2],
 						w: S_WIDTH,
@@ -379,22 +362,21 @@ WatchFace({
 						font_array: statNums,
 						h_space: 2,
 						align_h: [hmUI.align.LEFT, hmUI.align.RIGHT][i % 2],
-						type: data_type,
+						type: EDIT_TYPES[typei],
 						invalid_image: statInvalid,
 						show_level: hmUI.show_level.ONLY_NORMAL
 					});
-				}
-				else
-				{
-					widget=hmUI.createWidget(hmUI.widget.ARC_PROGRESS, { // progress
+				} else {
+					// Phone battery widget - manual control
+					widget = hmUI.createWidget(hmUI.widget.ARC_PROGRESS, { // progress
 						...props,
 						line_width: PROGRESS_TH,
 						color: EDITS[typei][1],
 						level: 0,
 					});
 					phoneBatteryArcs.push(widget);
-				
-					widget=hmUI.createWidget(hmUI.widget.TEXT_IMG, { // text
+
+					widget = hmUI.createWidget(hmUI.widget.TEXT_IMG, { // text
 						x: [I_SPACE_H, DW-S_WIDTH-I_SPACE_H][i % 2],
 						y: [DW/2+2*I_SPACE_V+I_SIZE-85, DH-DW/2-2*I_SPACE_V-I_SIZE-S_HEIGHT+85][Math.floor(i/2) % 2],
 						w: S_WIDTH,
@@ -407,8 +389,6 @@ WatchFace({
 					});
 					phoneBatteryWidgets.push(widget);
 				}
-				//NUEVO
-
 			}
 			
 			// Center widgets
@@ -422,19 +402,7 @@ WatchFace({
 					show_level: hmUI.show_level.ONLY_NORMAL
 				});
 
-				//NUEVO
-				let data_type=hmUI.data_type.HEART;
-				switch(cType)
-				{
-					case 10001: data_type= hmUI.data_type.STEP;break;
-					case 10002: data_type= hmUI.data_type.CAL;break;
-					case 10003: data_type= hmUI.data_type.HEART;break;
-					case 10004: data_type= hmUI.data_type.PAI_WEEKLY;break;
-					case 10005: data_type= hmUI.data_type.BATTERY;break;
-					default: data_type=hmUI.data_type.HEART;
-				}
-				if(cType!==10006)
-				{
+				if (cType !== 10006) {
 					widget=hmUI.createWidget(hmUI.widget.TEXT_IMG, {
 						x: DW/2+10,
 						y: current_y+5,
@@ -442,7 +410,7 @@ WatchFace({
 						align_h: hmUI.align.LEFT,
 						h_space: 2,
 						font_array: wNums,
-						type: data_type,
+						type: cType,
 						show_level: hmUI.show_level.ONLY_NORMAL
 					});
 
@@ -451,11 +419,10 @@ WatchFace({
 						y: current_y,
 						w: 2*IL_SIZE+4,
 						h: IL_SIZE,
-						type: data_type
+						type: cType
 					});
-				}
-				else
-				{
+				} else {
+					// Phone battery center widget
 					widget=hmUI.createWidget(hmUI.widget.TEXT_IMG, {
 						x: DW/2+10,
 						y: current_y+5,
@@ -467,8 +434,6 @@ WatchFace({
 					});
 					phoneBatteryWidgets.push(widget);
 				}
-				//NUEVO
-
 			}
 			
 			if (largeGroupType === CUSTOM_WIDGETS.NONE) 
@@ -486,7 +451,8 @@ WatchFace({
 			const btDisconnected = hmUI.createWidget(hmUI.widget.IMG_STATUS, IMG_STATUS_BT_DISCONNECTED);
 
 			let weekW = hmUI.createWidget(hmUI.widget.IMG_WEEK, {
-				x: 76+80+32-19,
+				//x: 76+80+32-19,
+                x: px(DW/2-63),                   // Center the week display
 				y: dateline,
 				week_en: dayNames,
 				week_tc: dayNames,
@@ -496,7 +462,8 @@ WatchFace({
 
 			// Date
 			let dateW=hmUI.createWidget(hmUI.widget.IMG_DATE, {
-				day_startX: 133+80+32-19,
+				//day_startX: 133+80+32-19,
+                day_startX: px(DW/2-8),          // Center the day
 				day_startY: dateline,
 				day_zero: 1,
 				day_space: 1,
@@ -507,7 +474,8 @@ WatchFace({
 				day_unit_tc: statSlash,
 				day_unit_en: statSlash,
 
-				month_startX: 176+80+32-19,
+				//month_startX: 176+80+32-19,
+                month_startX: px(DW/2+37),        // Center the month next to day
 				month_startY: dateline,
 				month_zero: 1,
 				month_space: 1,
@@ -517,13 +485,12 @@ WatchFace({
 				show_level: hmUI.show_level.ONLY_NORMAL
 			});
 		
-			//NUEVO
 			for (let i of PROGRESSES.keys()) {
 				makeProgress(i, EDIT_TYPES.indexOf(groups[i].getProperty(hmUI.prop.CURRENT_TYPE)));
 			}
 			for (let i of PROGRESSES.keys()) {
-				let tipo=groups[i].getProperty(hmUI.prop.CURRENT_TYPE);
-				if (tipo === 10004) {
+				let groupType = groups[i].getProperty(hmUI.prop.CURRENT_TYPE);
+				if (groupType === hmUI.data_type.PAI_WEEKLY) {
 					let widget=hmUI.createWidget(hmUI.widget.IMG, {
 						x: [0, DW / 2][i % 2],
 						y: [0, DH - DW / 2 - I_SIZE - I_SPACE_V][Math.floor(i / 2) % 2],
@@ -532,38 +499,25 @@ WatchFace({
 					}).addEventListener(hmUI.event.CLICK_UP, function (info) {
 						hmApp.startApp({ url: 'pai_app_Screen', native: true });
 					});
-				} else if (tipo !== 10006) {
-
-					let data_type=hmUI.data_type.STEP;
-					switch(tipo)
-					{
-						case 10001: data_type= hmUI.data_type.STEP;break;
-						case 10002: data_type= hmUI.data_type.CAL;break;
-						case 10003: data_type= hmUI.data_type.HEART;break;
-						case 10004: data_type= hmUI.data_type.PAI_WEEKLY;break;
-						case 10005: data_type= hmUI.data_type.BATTERY;break;
-						default: data_type=hmUI.data_type.STEP;
-					}
+				} else if (groupType !== 10006) {
 					let widget=hmUI.createWidget(hmUI.widget.IMG_CLICK, {
 						x: [0, DW / 2][i % 2],
 						y: [0, DH - DW / 2 - I_SIZE - I_SPACE_V][Math.floor(i / 2) % 2],
 						w: DW / 2,
 						h: DW / 2 + I_SIZE + I_SPACE_V,
-						type: data_type
+						type: groupType
 					});
 				}
+				// Phone battery widgets don't need click handlers as they're display-only
 			}
-			//NUEVO
 
 			let cTypes = [
 				centerGroup1.getProperty(hmUI.prop.CURRENT_TYPE),
 				centerGroup2.getProperty(hmUI.prop.CURRENT_TYPE)
 			];
 			for (let i in cTypes) {
-				//NUEVO
-				if (cTypes[i] === 10007){//hmUI.data_type.WEATHER) {
-				//NUEVO
-						makeWeather(C_POS[i]);
+				if (cTypes[i] === hmUI.data_type.WEATHER) {
+					makeWeather(C_POS[i]);
 				} else {
 					makeWidget(cTypes[i], C_POS[i]);
 				}
@@ -656,20 +610,28 @@ WatchFace({
 		}
         const bgObj = watchdripData.getBg();
 
+        // Update phone battery data if available
+        if (screenType === hmSetting.screen_type.WATCHFACE) {
+            const status = watchdripData.getStatus();
+            if (status) {
+                const batValue = status.getBatVal();
+                if (batValue !== undefined && batValue !== null) {
+                    // Update all phone battery text widgets
+                    for (let i = 0; i < phoneBatteryWidgets.length; i++) {
+                        phoneBatteryWidgets[i].setProperty(hmUI.prop.TEXT, batValue.toString());
+                    }
+                    
+                    // Update all phone battery progress arcs
+                    const batPercentage = parseInt(batValue) || 0;
+                    for (let i = 0; i < phoneBatteryArcs.length; i++) {
+                        phoneBatteryArcs[i].setProperty(hmUI.prop.LEVEL, batPercentage);
+                    }
+                }
+            }
+        }
+
         if (bgObj.isHasData()) 
 		{
-			//NUEVO
-			let i=0;
-			while(i<phoneBatteryWidgets.length)
-			{
-				phoneBatteryWidgets[i++].setProperty(hmUI.prop.TEXT, ""+watchdripData.getStatus().bat);
-			}
-			i=0;
-			while(i<phoneBatteryArcs.length)
-			{
-				phoneBatteryArcs[i++].setProperty(hmUI.prop.LEVEL, watchdripData.getStatus().bat);
-			}
-			//NUEVO
 			valorBG=bgObj.getBGVal();
 			if( bgObj.isLow)
 				tipoColorBG=1;

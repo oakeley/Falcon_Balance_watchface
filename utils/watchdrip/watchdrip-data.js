@@ -7,7 +7,8 @@ import {GraphData} from "./model/graphData";
 import {ExternalData} from "./model/externalData";
 
 
-const BG_STALE_TIME_MS = 13 * MINUTE_IN_MS;
+//const BG_STALE_TIME_MS = 13 * MINUTE_IN_MS;
+const BG_STALE_TIME_MS = 8 * MINUTE_IN_MS; // Libre timing fix
 const TIMEAGO_STALE = 24* 60 * MINUTE_IN_MS;
 
 export class WatchdripData {

@@ -131,9 +131,12 @@ export const DIGITAL_TIME_H = {
     pm_sc_path: img('bigNum/pm.png'),
     pm_en_path: img('bigNum/pm.png'),
     second_zero: true,
-    second_startX: 37+80+32-19,
-    second_startY: dateline,
-    second_align: hmUI.align.CENTER_H,
+    //second_startX: 37+80+32-19,
+    //second_startY: dateline,
+    //second_align: hmUI.align.CENTER_H,
+    second_startX: px(161+80+32-19+70),  // Move seconds to right of minutes
+    second_startY: px(104-19+45),        // Align with bottom of minutes (add height of time digits)
+    second_align: hmUI.align.LEFT,       // Change alignment
     second_array: statNums,
     second_space: 3,
     show_level: hmUI.show_level.ONLY_NORMAL
@@ -163,9 +166,12 @@ export const DIGITAL_TIME_H_BIG = {
     pm_sc_path: img('bigNum/pm.png'),
     pm_en_path: img('bigNum/pm.png'),
     second_zero: true,
-    second_startX: 37+80+32-19,
-    second_startY: dateline,
-    second_align: hmUI.align.CENTER_H,
+    //second_startX: 37+80+32-19,
+    //second_startY: dateline,
+    //second_align: hmUI.align.CENTER_H,
+    second_startX: px(161+80+32-19+70),  // Move seconds to right of minutes  
+    second_startY: px(285-19+45),        // Align with bottom of minutes
+    second_align: hmUI.align.LEFT,       // Change alignment
     second_array: statNums,
     second_space: 3,
     show_level: hmUI.show_level.ONLY_NORMAL
@@ -191,9 +197,12 @@ export const DIGITAL_TIME_V = {
     minute_space: T_SPACE,
 
     second_zero: true,
-    second_startX: 37+80+32-19,
-    second_startY: dateline,
-    second_align: hmUI.align.CENTER_H,
+    //second_startX: 37+80+32-19,
+    //second_startY: dateline,
+    //second_align: hmUI.align.CENTER_H,
+    second_startX: px((DW-T_SPACE)/2-T_WIDTH+T_WIDTH+T_SPACE+20), // Right of minutes
+    second_startY: px(((DH+T_SPACE-11)/2)-44+5+45),               // Align with bottom of minutes
+    second_align: hmUI.align.LEFT,
     second_array: statNums,
     second_space: 3,
 	
@@ -254,6 +263,298 @@ export const DIGITAL_TIME_AOD_V = {
     show_level: hmUI.show_level.ONAL_AOD*/
 };
 
+export const BG_TREND_IMAGE_BIG_AOD = {
+    src: 'watchdrip/arrowsAOD/None.png',
+    x: px(183+32-19),
+    y: px(177-19),
+    w: px(55),
+    h: px(55),
+    show_level: hmUI.show_level.ONAL_AOD
+};
+
+export const BG_STALE_IMG = {
+//    x: px(69-45),
+//    y: px(135-10),
+    x: px(15+80+32-19),
+    y: px(318-19-5),
+    src: 'watchdrip/stale.png',
+    visible: false,
+    show_level: hmUI.show_level.ONLY_NORMAL
+};
+
+export const BG_STALE_IMG_BIG = {
+//    x: px(69-45),
+//    y: px(135-10),
+    x: px(45+32-19),
+    y: px(177-19),
+	w: px(240),
+    src: 'watchdrip/stale.png',
+    visible: false,
+    show_level: hmUI.show_level.ONLY_NORMAL
+};
+
+export const IMG_LOADING_PROGRESS = {
+    x: px(93+80+32-19),
+    y: px(293-19-5),
+    src: 'watchdrip/progress.png',
+    angle: 0,
+    center_x: 24.5,
+    center_y: 24.5,
+    visible: false,
+    show_level: hmUI.show_level.ONLY_NORMAL
+};
+
+export const IMG_LOADING_PROGRESS_BIG = {
+    x: px(45+77+15+32-19),
+    y: px(128+5-19),
+    src: 'watchdrip/progress_big.png',
+    angle: 0,
+    center_x: 43,
+    center_y: 43,
+    visible: false,
+    show_level: hmUI.show_level.ONLY_NORMAL
+};
+
+export const IMG_STATUS_BT_DISCONNECTED = {
+    x: px(40+32-19),
+    y: px(60),
+    src: img('status/bt_disconnect.png'),
+    type: hmUI.system_status.DISCONNECT,
+    show_level: hmUI.show_level.ONLY_NORMAL
+};
+
+export const CUSTOM_WIDGETS = {
+    NONE: 100001,
+    GRAPH: 100011,
+    GRAPH_LOW_HIGH_LINES: 100012,
+    BIG_BG: 100015
+};
+// END edit group treatments aaps/xdrip data
+
+
+// BEGIN edit group default styles
+const editWidgetW = 83;
+const editWidgetH = 74;
+const editWidgetIconHeight = 37;
+const editWidgetIconWidth = 37;
+const editWidgetIconMargin = 9;
+const editWidgetArcRadius = 15;
+const editWidgetArcLineWidth = 10;
+const editWidgetArcMarginX = 1;
+const editWidgetArcMarginTop = -1;
+
+const editGroupTypes = [
+    {
+        type: CUSTOM_WIDGETS.NONE,
+        title_sc: 'None',
+        title_tc: 'None',
+        title_en: 'None',
+        preview: img('widgets/empty.png')
+    }
+];
+
+const editGroupTypesLarge = editGroupTypes.concat(
+    [
+        {
+            type: CUSTOM_WIDGETS.GRAPH_LOW_HIGH_LINES,
+            title_sc: 'xDrip graph low/high lines',
+            title_tc: 'xDrip graph low/high lines',
+            title_en: 'xDrip graph low/high lines',
+            preview: img('widgets/GRAPH_LOW_HIGH_LINES.png')
+        },
+        {
+            type: CUSTOM_WIDGETS.GRAPH,
+            title_sc: 'xDrip graph',
+            title_tc: 'xDrip graph',
+            title_en: 'xDrip graph',
+            preview: img('widgets/GRAPH.png')
+        },
+        {
+            type: CUSTOM_WIDGETS.BIG_BG,
+            title_sc: 'Big BG values',
+            title_tc: 'Big BG values',
+            title_en: 'Big BG values',
+            preview: img('widgets/BIG.png')
+        }		
+    ]
+);
+
+export const EDIT_GROUP_W_DEFAULTS = {
+    x: px(30),
+    w: px(330),
+    h: px(80),
+    select_image: img('mask/select-large.png'),
+    un_select_image: img('mask/un_select-large.png'),
+    optional_types: editGroupTypes,
+    count: editGroupTypes.length,
+    tips_BG: img('mask/text_tag-wide.png'),
+    tips_width: 181,
+    tips_margin: 2, // optional, default value: 0
+    show_level: hmUI.show_level.ONLY_NORMAL | hmUI.show_level.ONLY_EDIT,
+    tips_x: 0,
+    tips_y: -55
+};
+
+// Default styles for all IMG widgets 
+export const EDIT_DEFAULT_IMG = {
+    // TODO: make images full width and remove this
+    w: px(editWidgetW), // full width to center
+    show_level: hmUI.show_level.ONLY_NORMAL
+};
+
+// Default styles for all ARC_PROGRESS Left widgets
+const EDIT_DEFAULT_ARC_PROGRESS_LEFT = {
+    radius: px(editWidgetArcRadius),
+    start_angle: 180,
+    end_angle: 360,
+    color: Colors.accent,
+    line_width: editWidgetArcLineWidth,
+    show_level: hmUI.show_level.ONLY_NORMAL
+};
+// Default styles for all ARC_PROGRESS RIGHT widgets
+const EDIT_DEFAULT_ARC_PROGRESS_RIGHT = {
+    radius: px(editWidgetArcRadius),
+    start_angle: 180,
+    end_angle: 0,
+    color: Colors.accent,
+    line_width: editWidgetArcLineWidth,
+    show_level: hmUI.show_level.ONLY_NORMAL
+};
+
+export const EDIT_DEFAULT_ARC_PROGRESS = {
+    left: EDIT_DEFAULT_ARC_PROGRESS_LEFT,
+    right: EDIT_DEFAULT_ARC_PROGRESS_RIGHT
+
+};
+
+// Default styles for all TEXT_IMG widgets
+export const EDIT_DEFAULT_TEXT_IMG = {
+    w: px(editWidgetW),
+    padding: false,
+    h_space: 1,
+    align_h: hmUI.align.CENTER_H,
+    show_level: hmUI.show_level.ONLY_NORMAL,
+    font_array: smallNumArr,
+    dot_image: img('smallNum/d.png'),
+    negative_image: img('smallNum/negative_image.png')
+};
+// END edit group default styles
+
+
+// BEGIN Top Edit Widgets
+const topX = 152;
+const topY = 134;
+
+export const EDIT_TOP_GROUP = {
+    edit_id: 101,
+    x: px(topX),
+    y: px(topY),
+    default_type: hmUI.edit_type.HEART
+}; 
+
+// Styles for all Top IMG widgets
+export const EDIT_TOP_IMG = {
+    x: px(topX),
+    y: px(topY)
+};
+
+// Styles for all Top ARC_PROGRESS widgets
+const EDIT_TOP_ARC_PROGRESS_LEFT = {
+    center_x: px(topX + editWidgetArcRadius + editWidgetArcMarginX + (editWidgetArcLineWidth / 2)),
+    center_y: px(topY + editWidgetArcRadius + editWidgetArcMarginTop + (editWidgetArcLineWidth / 2))
+};
+// Styles for all Top ARC_PROGRESS Right widgets
+const EDIT_TOP_ARC_PROGRESS_RIGHT = {
+    center_x: px(topX + editWidgetArcRadius + (2 * editWidgetArcMarginX) + editWidgetIconWidth + (editWidgetArcLineWidth / 2) + 1),
+    center_y: px(topY + editWidgetArcRadius + editWidgetArcMarginTop + (editWidgetArcLineWidth / 2))
+};
+export const EDIT_TOP_ARC_PROGRESS = {
+    left: EDIT_TOP_ARC_PROGRESS_LEFT,
+    right: EDIT_TOP_ARC_PROGRESS_RIGHT
+};
+
+// Styles for all Top TEXT_IMG widgets
+export const EDIT_TOP_TEXT_IMG = {
+    x: px(topX),
+    y: px(topY + editWidgetIconHeight + editWidgetIconMargin)
+};
+// END Top Left Edit Widgets
+
+
+// BEGIN Wide Edit Widgets
+const largeX = 80;
+const largeY = 348;
+
+export const EDIT_GROUP_DEFAULTS = {
+    w: px(editWidgetW),
+    h: px(editWidgetH),
+    select_image: img('mask/select.png'),
+    un_select_image: img('mask/un_select.png'),
+    optional_types: editGroupTypes,
+    count: editGroupTypes.length,
+    tips_BG: img('mask/text_tag.png'),
+    tips_x: -43,
+    tips_y: -55,
+    tips_width: 108,
+    tips_margin: 1, // optional, default value: 0
+    show_level: hmUI.show_level.ONLY_NORMAL | hmUI.show_level.ONLY_EDIT
+};
+
+export const EDIT_LARGE_GROUP = {
+    edit_id: 112,
+    select_image: img('mask/select-large.png'),
+    un_select_image: img('mask/un_select-large.png'),
+    x: px(30+32-19),
+    y: px(208-19),
+    w: px(330),
+    h: px(88),
+    optional_types: editGroupTypesLarge,
+    count: editGroupTypesLarge.length,
+    default_type: CUSTOM_WIDGETS.GRAPH_LOW_HIGH_LINES,
+};
+
+// Default styles for all Wide IMG widgets
+const LARGE_IMAGE_Y_SHIFT = 37;
+
+export const EDIT_LARGE_IMG = {
+    x: px(largeX),
+    y: px(largeY + LARGE_IMAGE_Y_SHIFT)
+};
+
+// Styles for all Wide ARC_PROGRESS widgets
+const EDIT_LARGE_ARC_PROGRESS_LEFT = {
+    center_x: px(largeX + editWidgetArcRadius + editWidgetArcMarginX + (editWidgetArcLineWidth / 2)),
+    center_y: px(largeY + LARGE_IMAGE_Y_SHIFT + editWidgetArcRadius + editWidgetArcMarginTop + (editWidgetArcLineWidth / 2))
+};
+// Styles for all Wide ARC_PROGRESS Right widgets
+const EDIT_LARGE_ARC_PROGRESS_RIGHT = {
+    center_x: px(largeX + editWidgetArcRadius + (2 * editWidgetArcMarginX) + editWidgetIconWidth + (editWidgetArcLineWidth / 2) + 1),
+    center_y: px(largeY + LARGE_IMAGE_Y_SHIFT + editWidgetArcRadius + editWidgetArcMarginTop + (editWidgetArcLineWidth / 2))
+};
+export const EDIT_LARGE_ARC_PROGRESS = {
+    left: EDIT_LARGE_ARC_PROGRESS_LEFT,
+    right: EDIT_LARGE_ARC_PROGRESS_RIGHT
+};
+
+// Styles for all Wide TEXT_IMG widgets
+export const EDIT_LARGE_TEXT_IMG = {
+    x: px(largeX),
+    y: px(largeY)
+};
+// END Wide Edit Widgets
+
+
+export const GRAPH_SETTINGS = {
+    x: 80,
+    y: 122-19-5,
+    w: 294-38,
+    h: 176-5,
+    point_size: 8,
+    treatment_point_size: 12,
+    line_size: 2
+};
+
+// END Edit Widgets_
 export const BG_VALUE_TEXT_IMG_AOD = {
     x: px(71-25+32-19),
     y: px(257-19),
@@ -592,297 +893,4 @@ export const BG_TREND_IMAGE_BIG = {
     h: px(55),
     show_level: hmUI.show_level.ONLY_NORMAL
 };
-
-export const BG_TREND_IMAGE_BIG_AOD = {
-    src: 'watchdrip/arrowsAOD/None.png',
-    x: px(183+32-19),
-    y: px(177-19),
-    w: px(55),
-    h: px(55),
-    show_level: hmUI.show_level.ONAL_AOD
-};
-
-export const BG_STALE_IMG = {
-//    x: px(69-45),
-//    y: px(135-10),
-    x: px(15+80+32-19),
-    y: px(318-19-5),
-    src: 'watchdrip/stale.png',
-    visible: false,
-    show_level: hmUI.show_level.ONLY_NORMAL
-};
-
-export const BG_STALE_IMG_BIG = {
-//    x: px(69-45),
-//    y: px(135-10),
-    x: px(45+32-19),
-    y: px(177-19),
-	w: px(240),
-    src: 'watchdrip/stale.png',
-    visible: false,
-    show_level: hmUI.show_level.ONLY_NORMAL
-};
-
-export const IMG_LOADING_PROGRESS = {
-    x: px(93+80+32-19),
-    y: px(293-19-5),
-    src: 'watchdrip/progress.png',
-    angle: 0,
-    center_x: 24.5,
-    center_y: 24.5,
-    visible: false,
-    show_level: hmUI.show_level.ONLY_NORMAL
-};
-
-export const IMG_LOADING_PROGRESS_BIG = {
-    x: px(45+77+15+32-19),
-    y: px(128+5-19),
-    src: 'watchdrip/progress_big.png',
-    angle: 0,
-    center_x: 43,
-    center_y: 43,
-    visible: false,
-    show_level: hmUI.show_level.ONLY_NORMAL
-};
-
-export const IMG_STATUS_BT_DISCONNECTED = {
-    x: px(40+32-19),
-    y: px(60),
-    src: img('status/bt_disconnect.png'),
-    type: hmUI.system_status.DISCONNECT,
-    show_level: hmUI.show_level.ONLY_NORMAL
-};
-
-export const CUSTOM_WIDGETS = {
-    NONE: 100001,
-    GRAPH: 100011,
-    GRAPH_LOW_HIGH_LINES: 100012,
-    BIG_BG: 100015
-};
-// END edit group treatments aaps/xdrip data
-
-
-// BEGIN edit group default styles
-const editWidgetW = 83;
-const editWidgetH = 74;
-const editWidgetIconHeight = 37;
-const editWidgetIconWidth = 37;
-const editWidgetIconMargin = 9;
-const editWidgetArcRadius = 15;
-const editWidgetArcLineWidth = 10;
-const editWidgetArcMarginX = 1;
-const editWidgetArcMarginTop = -1;
-
-const editGroupTypes = [
-    {
-        type: CUSTOM_WIDGETS.NONE,
-        title_sc: 'None',
-        title_tc: 'None',
-        title_en: 'None',
-        preview: img('widgets/empty.png')
-    }
-];
-
-const editGroupTypesLarge = editGroupTypes.concat(
-    [
-        {
-            type: CUSTOM_WIDGETS.GRAPH_LOW_HIGH_LINES,
-            title_sc: 'xDrip graph low/high lines',
-            title_tc: 'xDrip graph low/high lines',
-            title_en: 'xDrip graph low/high lines',
-            preview: img('widgets/GRAPH_LOW_HIGH_LINES.png')
-        },
-        {
-            type: CUSTOM_WIDGETS.GRAPH,
-            title_sc: 'xDrip graph',
-            title_tc: 'xDrip graph',
-            title_en: 'xDrip graph',
-            preview: img('widgets/GRAPH.png')
-        },
-        {
-            type: CUSTOM_WIDGETS.BIG_BG,
-            title_sc: 'Big BG values',
-            title_tc: 'Big BG values',
-            title_en: 'Big BG values',
-            preview: img('widgets/BIG.png')
-        }		
-    ]
-);
-
-export const EDIT_GROUP_W_DEFAULTS = {
-    x: px(30),
-    w: px(330),
-    h: px(80),
-    select_image: img('mask/select-large.png'),
-    un_select_image: img('mask/un_select-large.png'),
-    optional_types: editGroupTypes,
-    count: editGroupTypes.length,
-    tips_BG: img('mask/text_tag-wide.png'),
-    tips_width: 181,
-    tips_margin: 2, // optional, default value: 0
-    show_level: hmUI.show_level.ONLY_NORMAL | hmUI.show_level.ONLY_EDIT,
-    tips_x: 0,
-    tips_y: -55
-};
-
-// Default styles for all IMG widgets 
-export const EDIT_DEFAULT_IMG = {
-    // TODO: make images full width and remove this
-    w: px(editWidgetW), // full width to center
-    show_level: hmUI.show_level.ONLY_NORMAL
-};
-
-// Default styles for all ARC_PROGRESS Left widgets
-const EDIT_DEFAULT_ARC_PROGRESS_LEFT = {
-    radius: px(editWidgetArcRadius),
-    start_angle: 180,
-    end_angle: 360,
-    color: Colors.accent,
-    line_width: editWidgetArcLineWidth,
-    show_level: hmUI.show_level.ONLY_NORMAL
-};
-// Default styles for all ARC_PROGRESS RIGHT widgets
-const EDIT_DEFAULT_ARC_PROGRESS_RIGHT = {
-    radius: px(editWidgetArcRadius),
-    start_angle: 180,
-    end_angle: 0,
-    color: Colors.accent,
-    line_width: editWidgetArcLineWidth,
-    show_level: hmUI.show_level.ONLY_NORMAL
-};
-
-export const EDIT_DEFAULT_ARC_PROGRESS = {
-    left: EDIT_DEFAULT_ARC_PROGRESS_LEFT,
-    right: EDIT_DEFAULT_ARC_PROGRESS_RIGHT
-
-};
-
-// Default styles for all TEXT_IMG widgets
-export const EDIT_DEFAULT_TEXT_IMG = {
-    w: px(editWidgetW),
-    padding: false,
-    h_space: 1,
-    align_h: hmUI.align.CENTER_H,
-    show_level: hmUI.show_level.ONLY_NORMAL,
-    font_array: smallNumArr,
-    dot_image: img('smallNum/d.png'),
-    negative_image: img('smallNum/negative_image.png')
-};
-// END edit group default styles
-
-
-// BEGIN Top Edit Widgets
-const topX = 152;
-const topY = 134;
-
-export const EDIT_TOP_GROUP = {
-    edit_id: 101,
-    x: px(topX),
-    y: px(topY),
-    default_type: hmUI.edit_type.HEART
-}; 
-
-// Styles for all Top IMG widgets
-export const EDIT_TOP_IMG = {
-    x: px(topX),
-    y: px(topY)
-};
-
-// Styles for all Top ARC_PROGRESS widgets
-const EDIT_TOP_ARC_PROGRESS_LEFT = {
-    center_x: px(topX + editWidgetArcRadius + editWidgetArcMarginX + (editWidgetArcLineWidth / 2)),
-    center_y: px(topY + editWidgetArcRadius + editWidgetArcMarginTop + (editWidgetArcLineWidth / 2))
-};
-// Styles for all Top ARC_PROGRESS Right widgets
-const EDIT_TOP_ARC_PROGRESS_RIGHT = {
-    center_x: px(topX + editWidgetArcRadius + (2 * editWidgetArcMarginX) + editWidgetIconWidth + (editWidgetArcLineWidth / 2) + 1),
-    center_y: px(topY + editWidgetArcRadius + editWidgetArcMarginTop + (editWidgetArcLineWidth / 2))
-};
-export const EDIT_TOP_ARC_PROGRESS = {
-    left: EDIT_TOP_ARC_PROGRESS_LEFT,
-    right: EDIT_TOP_ARC_PROGRESS_RIGHT
-};
-
-// Styles for all Top TEXT_IMG widgets
-export const EDIT_TOP_TEXT_IMG = {
-    x: px(topX),
-    y: px(topY + editWidgetIconHeight + editWidgetIconMargin)
-};
-// END Top Left Edit Widgets
-
-
-// BEGIN Wide Edit Widgets
-const largeX = 80;
-const largeY = 348;
-
-export const EDIT_GROUP_DEFAULTS = {
-    w: px(editWidgetW),
-    h: px(editWidgetH),
-    select_image: img('mask/select.png'),
-    un_select_image: img('mask/un_select.png'),
-    optional_types: editGroupTypes,
-    count: editGroupTypes.length,
-    tips_BG: img('mask/text_tag.png'),
-    tips_x: -43,
-    tips_y: -55,
-    tips_width: 108,
-    tips_margin: 1, // optional, default value: 0
-    show_level: hmUI.show_level.ONLY_NORMAL | hmUI.show_level.ONLY_EDIT
-};
-
-export const EDIT_LARGE_GROUP = {
-    edit_id: 112,
-    select_image: img('mask/select-large.png'),
-    un_select_image: img('mask/un_select-large.png'),
-    x: px(30+32-19),
-    y: px(208-19),
-    w: px(330),
-    h: px(88),
-    optional_types: editGroupTypesLarge,
-    count: editGroupTypesLarge.length,
-    default_type: CUSTOM_WIDGETS.GRAPH_LOW_HIGH_LINES,
-};
-
-// Default styles for all Wide IMG widgets
-const LARGE_IMAGE_Y_SHIFT = 37;
-
-export const EDIT_LARGE_IMG = {
-    x: px(largeX),
-    y: px(largeY + LARGE_IMAGE_Y_SHIFT)
-};
-
-// Styles for all Wide ARC_PROGRESS widgets
-const EDIT_LARGE_ARC_PROGRESS_LEFT = {
-    center_x: px(largeX + editWidgetArcRadius + editWidgetArcMarginX + (editWidgetArcLineWidth / 2)),
-    center_y: px(largeY + LARGE_IMAGE_Y_SHIFT + editWidgetArcRadius + editWidgetArcMarginTop + (editWidgetArcLineWidth / 2))
-};
-// Styles for all Wide ARC_PROGRESS Right widgets
-const EDIT_LARGE_ARC_PROGRESS_RIGHT = {
-    center_x: px(largeX + editWidgetArcRadius + (2 * editWidgetArcMarginX) + editWidgetIconWidth + (editWidgetArcLineWidth / 2) + 1),
-    center_y: px(largeY + LARGE_IMAGE_Y_SHIFT + editWidgetArcRadius + editWidgetArcMarginTop + (editWidgetArcLineWidth / 2))
-};
-export const EDIT_LARGE_ARC_PROGRESS = {
-    left: EDIT_LARGE_ARC_PROGRESS_LEFT,
-    right: EDIT_LARGE_ARC_PROGRESS_RIGHT
-};
-
-// Styles for all Wide TEXT_IMG widgets
-export const EDIT_LARGE_TEXT_IMG = {
-    x: px(largeX),
-    y: px(largeY)
-};
-// END Wide Edit Widgets
-
-
-export const GRAPH_SETTINGS = {
-    x: 80,
-    y: 122-19-5,
-    w: 294-38,
-    h: 176-5,
-    point_size: 8,
-    treatment_point_size: 12,
-    line_size: 2
-};
-
-// END Edit Widgets
 
