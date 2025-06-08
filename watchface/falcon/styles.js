@@ -229,38 +229,18 @@ export const DIGITAL_TIME_AOD_V = {
     minute_align: hmUI.align.CENTER_H,
     minute_array: timeNumsAOD,
     minute_follow: 1,
+    // Add seconds back for AOD
+    second_zero: true,
+    second_startX: px(161+80+32-19+70),  // Position to right of minutes
+    second_startY: px(104-10-19+45),     // Align with bottom of minutes for AOD
+    second_align: hmUI.align.LEFT,
+    second_array: statNums,              // Use smaller numbers for seconds in AOD
+    second_space: 3,
     am_sc_path: null,
     am_en_path: null,
     pm_sc_path: null,
     pm_en_path: null,
-    second_array: null,
     show_level: hmUI.show_level.ONAL_AOD
-	
-/*	hour_zero: true,
-    hour_startX: (DW-T_SPACE)/2-T_WIDTH,
-    hour_startY: (DH-T_SPACE)/2-T_HEIGHT-50,
-    hour_align: hmUI.align.CENTER_H,
-    hour_array: timeNumsAOD,
-    hour_space: T_SPACE,
-    hour_unit_sc: null, // colon
-    hour_unit_tc: null,
-    hour_unit_en: null,
-	
-    minute_follow: false,
-    minute_zero: true,
-    minute_startX: (DW-T_SPACE)/2-T_WIDTH,
-    minute_startY: ((DH+T_SPACE-11)/2)-30-47,
-    minute_align: hmUI.align.CENTER_H,
-    minute_array: timeNumsAOD,
-    minute_space: T_SPACE,
-	
-    am_sc_path: null,
-    am_en_path: null,
-    pm_sc_path: null,
-    pm_en_path: null,
-	
-    second_array: null,
-    show_level: hmUI.show_level.ONAL_AOD*/
 };
 
 export const BG_TREND_IMAGE_BIG_AOD = {
@@ -556,10 +536,10 @@ export const GRAPH_SETTINGS = {
 
 // END Edit Widgets_
 export const BG_VALUE_TEXT_IMG_AOD = {
-    x: px(71-25+32-19),
+    x: px(DW/2-124),  // Center the glucose value (was 71-25+32-19)
     y: px(257-19),
     w: px(248),
-	h_space: 2,	
+    h_space: 2,	
     align_h: hmUI.align.CENTER_H,
     dot_image: img('bgNumAOD/d.png'),
     font_array: bgNumAODArr,
@@ -567,10 +547,10 @@ export const BG_VALUE_TEXT_IMG_AOD = {
 };
 
 export const BG_VALUE_TEXT_IMG_LOW_AOD = {
-    x: px(71-25+32-19),
+    x: px(DW/2-124),  // Center the glucose value
     y: px(257-19),
     w: px(248),
-	h_space: 2,		
+    h_space: 2,		
     align_h: hmUI.align.CENTER_H,
     dot_image: img('bgNumAODLow/d.png'),
     font_array: bgNumAODLowArr,
@@ -578,10 +558,10 @@ export const BG_VALUE_TEXT_IMG_LOW_AOD = {
 };
 
 export const BG_VALUE_TEXT_IMG_HIGH_AOD = {
-    x: px(71-25+32-19),
+    x: px(DW/2-124),  // Center the glucose value
     y: px(257-19),
     w: px(248),
-	h_space: 2,		
+    h_space: 2,		
     align_h: hmUI.align.CENTER_H,
     dot_image: img('bgNumAODHigh/d.png'),
     font_array: bgNumAODHighArr,
@@ -797,25 +777,25 @@ export const BG_DELTA_TEXT = {
     show_level: hmUI.show_level.ONLY_NORMAL
 };
 
-export const BG_TIME_TEXT_AOD = {
-    x: px(45+150+10-40+32-19),
+export const BG_DELTA_TEXT_AOD = {
+    x: px(DW/2-100),  // Center the delta text (was px(10))
     y: px(180-19),
-    w: px(233),
+    w: px(90),        // Adjust width for centering (was px(148))
     color: Colors.defaultTransparent,
     text_size: px(40),
-    align_h: hmUI.align.LEFT,
+    align_h: hmUI.align.RIGHT,  // Keep right align for delta
     align_v: hmUI.align.TOP,
     text_style: hmUI.text_style.NONE,
     show_level: hmUI.show_level.ONAL_AOD
 };
 
-export const BG_DELTA_TEXT_AOD = {
-    x: px(10),
+export const BG_TIME_TEXT_AOD = {
+    x: px(DW/2+10),   // Center the time text (was px(45+150+10-40+32-19))
     y: px(180-19),
-    w: px(148),
+    w: px(150),       // Adjust width for centering (was px(233))
     color: Colors.defaultTransparent,
     text_size: px(40),
-    align_h: hmUI.align.RIGHT,
+    align_h: hmUI.align.LEFT,   // Keep left align for time
     align_v: hmUI.align.TOP,
     text_style: hmUI.text_style.NONE,
     show_level: hmUI.show_level.ONAL_AOD
@@ -860,15 +840,11 @@ export const BG_TREND_IMAGE = {
 
 export const BG_TREND_IMAGE_AOD = {
     src: 'watchdrip/arrowsAOD/None.png',
-	
-    x: px(71-25+248+32-19),
-    y: px(257-19),
+    x: px(DW/2-27.5),  // Center the arrow (was px(71-25+248+32-19))
+    y: px(360),        // Position below glucose value (was px(257-19))
     w: px(55),
-	align_h: hmUI.align.LEFT,
-//    x: px(94+80),
-//    y: px(391),
-//    w: px(55),
     h: px(55),
+    align_h: hmUI.align.CENTER_H,
     show_level: hmUI.show_level.ONAL_AOD
 };
 
