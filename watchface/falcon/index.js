@@ -110,7 +110,8 @@ const EDITS = [
 ];
 const I_SIZE = 25;
 const IL_SIZE = 31;
-const I_SPACE_H = 4;
+//const I_SPACE_H = 4;
+const I_SPACE_H = 10; // Fix clipping of icons
 const I_SPACE_V = 14;
 
 const EDIT_GROUP_PROP = {
